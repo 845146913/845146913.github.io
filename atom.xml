@@ -6,7 +6,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="https://845146913.github.io/"/>
-  <updated>2017-11-10T12:48:14.763Z</updated>
+  <updated>2017-11-15T15:18:55.490Z</updated>
   <id>https://845146913.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>java8对字符串的操作</title>
+    <link href="https://845146913.github.io/2017/11/15/record1/"/>
+    <id>https://845146913.github.io/2017/11/15/record1/</id>
+    <published>2017-11-15T15:16:54.000Z</published>
+    <updated>2017-11-15T15:18:55.490Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="java8对字符串的操作"><a href="#java8对字符串的操作" class="headerlink" title="java8对字符串的操作"></a>java8对字符串的操作</h1><h2 id="1-把list里面的对象id转入Set"><a href="#1-把list里面的对象id转入Set" class="headerlink" title="1.把list里面的对象id转入Set"></a>1.把list里面的对象id转入Set</h2><p>map返回的Stream类型是根据你map传递进去的函数的返回值决定的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Set&lt;Long&gt; ids = list.stream()</div><div class="line">.map(SearchItem::getPt_id)</div><div class="line">.collect(Collectors.toSet());</div></pre></td></tr></table></figure></p><h2 id="2-对字符串连接的操作。"><a href="#2-对字符串连接的操作。" class="headerlink" title="2.对字符串连接的操作。"></a>2.对字符串连接的操作。</h2><pre><code>2.1 java8之前使用StringBuilder来拼接。</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">listToString</span><span class="params">(List&lt;String&gt; list, String delimiter)</span> </span>&#123;</div><div class="line">    StringBuilder result = <span class="keyword">new</span> StringBuilder();</div><div class="line">    <span class="keyword">for</span> (String str : list) &#123;</div><div class="line">        result.append(str).append(delimiter);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 删除末尾多余的 delimiter</span></div><div class="line">    result.delete(result.length() - delimiter.length(), result.length()); </div><div class="line">    </div><div class="line">    <span class="keyword">return</span> result.toString();</div><div class="line">&#125;</div></pre></td></tr></table></figure><pre><code>2.2 或者使用toString()字符串截取.</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">  List&lt;String&gt; ls = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line">ls.add(<span class="string">"1231"</span>);</div><div class="line">ls.add(<span class="string">"erer"</span>);</div><div class="line">String d = <span class="string">"1234"</span>+<span class="string">","</span>+<span class="string">"erer"</span>;</div><div class="line">String res = ls.toString();</div><div class="line">System.err.println(<span class="string">"ls:"</span>+res.substring(<span class="number">1</span>,res.length()-<span class="number">1</span>).replace(<span class="string">" "</span>, <span class="string">""</span>));</div></pre></td></tr></table></figure><pre><code>2.3 然而在java8提供了几种方式。通过新引入的StringJoiner类,构造方法有一、三个参数可选(delimiter, prefix, suffix)。实现方式1：String.join()</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">String.join(delimiter, list);</div></pre></td></tr></table></figure><pre><code>实现方式2: StringJoiner 替代 listToString(...)的StringBuilder简化代码.</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">StringJoiner result = <span class="keyword">new</span> StringJoiner(delimiter);</div><div class="line">    <span class="keyword">for</span> (String str : list) &#123;</div><div class="line">        result.add(str);</div><div class="line">    &#125;</div><div class="line"><span class="keyword">return</span> result.toString();</div></pre></td></tr></table></figure><pre><code>实现方式3:使用stream流操作Collections.joining()方式。</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">String string = ls.stream().collect(Collectors.joining(<span class="string">","</span>));</div><div class="line">String string = ls.stream().collect(Collectors.joining());</div><div class="line">String string = ls.stream().collect(Collectors.joining(<span class="string">","</span>, <span class="string">"&#123;"</span>, <span class="string">"&#125;"</span>));</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;java8对字符串的操作&quot;&gt;&lt;a href=&quot;#java8对字符串的操作&quot; class=&quot;headerlink&quot; title=&quot;java8对字符串的操作&quot;&gt;&lt;/a&gt;java8对字符串的操作&lt;/h1&gt;&lt;h2 id=&quot;1-把list里面的对象id转入Set&quot;&gt;&lt;a h
+      
+    
+    </summary>
+    
+    
+      <category term="开发随笔" scheme="https://845146913.github.io/tags/%E5%BC%80%E5%8F%91%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title>singleton</title>
