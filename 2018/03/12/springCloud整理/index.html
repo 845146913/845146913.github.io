@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="John Doe"><title>springCloud整理 · SilenceWang's Blog</title><meta name="description" content="RIBBON：基于http和tcp的客户端负载均衡工具，基于Netflix ribbon实现。
+通过restTemplate对象使用ribbon的自动化配置，同时配置@LoadBalanced 还能开启客户端负载均衡。
+1.restTemplate的几种服务调用实现：
+    1.get请求  ge"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">SilenceWang's Blog</a></h3><div class="description"><p>每天进步一点....(不定期更新)</p></div></div></div><ul class="social-links"></ul><div class="footer"><div class="by_farbox"></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a onclick="window.history.go(-1)" class="fa fa-chevron-left"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>springCloud整理</a></h3></div><div class="post-content"><h2 id="RIBBON："><a href="#RIBBON：" class="headerlink" title="RIBBON："></a>RIBBON：</h2><pre><code>基于http和tcp的客户端负载均衡工具，基于Netflix ribbon实现。
+通过restTemplate对象使用ribbon的自动化配置，同时配置@LoadBalanced 还能开启客户端负载均衡。
+1.restTemplate的几种服务调用实现：
+    1.get请求  getForEntity和getForObject,getForObject是对前者的封装。
+    2.post请求  postForEntity和postForObject、postForLocation（该方法实现以post请求提交资源，并返回新资源的uri）；
+    3.put请求 
+    4.delete请求
+2.负载均衡机制：
+    ......
+3.重试机制：默认是关闭的，
+    要开启spring.cloud.loadbalancer.retry.enabled=true
+    ......
+</code></pre><h2 id="Hystrix："><a href="#Hystrix：" class="headerlink" title="Hystrix："></a>Hystrix：</h2><pre><code>具备服务降级、服务熔断、线程和信号隔离、请求缓存、请求合并以及服务监控等功能。
+1.与ribbon结合使用。在消费者端主类使用@EnableCircuitBreaker注解启动断路器功能，ribbon开启客户端负载均衡。可以使用@SpringCloudApplication修饰主类它包含服务发现和断路器。
+2.改造服务消费方式，在调用服务的类方法上增加@HystrixCommand注解来指定毁掉方法：如：
+    @HystrixCommand(fallbackMethod = &quot;fallbackM&quot;)
+    public String testService(){
+        return restTemplate.getForObject(....);
+    }
+    public String fallbackM(){
+        return &quot;error:&quot;;
+    }
+3.工作流程
+    1.创建HystrixCommand或HystrixObservableCommand对象
+    2.命令执行
+        HystrixCommand两种执行方式：execute()同步执行、queue()异步执行.
+        HystrixObservableCommand两种执行方式：observe()、toObservable()
+    3.结果是否被缓存
+    4.断路器是否打开
+        打开--&gt;Hystrix不会执行命令，转接到fallback处理逻辑
+        关闭--&gt;检查是否有可用资源来执行命令。
+    5.线程池/请求队列/信号量是否占满
+        满--&gt;转接fallback处理逻辑
+    6.HystrixObservableCommand.construct()或HystrixCommand.run()
+        HystrixCommand.run():返回一个单一的结果，或者抛出异常
+        HystrixObservableCommand.construct()：返回一个Observable对象来发射多个结果，或通过onError发送错误通知。
+    7.计算断路器的健康度
+    8.fallback处理
+        也称服务降级
+    9.返回成功的响应
+4.使用HystrixCommand来封装具体的依赖服务调用逻辑（一种是继承方式、一种是@HystrixCommand注解）
+5.定义降级服务
+6.异常处理
+7.命令名称、分组以及线程池划分
+8.请求缓存（HystrixCommand.getCacheKey()）
+    注解方式实现请求缓存（@CacheResult、@CacheRemove、@CacheKey）
+    缓存清理的方式：@CacheRemove(commandKey = &quot;methodName&quot;) 方法体结合@CacheKey(&quot;id&quot;)使用。
+9.请求合并（HystrixCollapser）
+    注解方式实现合并
+    @HystrixCollapser(batchMethod = &quot;findAll&quot;, collapserProperties = {
+        @HystrixProperty(name = &quot;timeDelayInMilliseconds&quot;,value = &quot;100&quot;)})
+    public User find(Long id){
+        return null;
+    }
+    @HystrixCommand
+    public List&lt;User&gt; findAll(List&lt;Long&gt; ids){
+        return restTemplate.getForObject(.....);
+    }
+
+Hystrix仪表盘Dashboard
+    Turbine集群监控
+    消息代理 rabbitMQ
+</code></pre><h2 id="Feign"><a href="#Feign" class="headerlink" title="Feign:"></a>Feign:</h2><pre><code>整合了spring cloud ribbon和spring cloud Hystrix；还提供了声明式的Web服务客户端定义方式。
+
+1.简单使用：
+    1.主类 @EnabledFeignClients @EnableDiscoveryClient
+    2.定义接口时 @FeignClient(value=&quot;providerName&quot;)
+        接口中通过@RequestMapping()绑定该服务提供的接口
+2.参数绑定
+3.继承特性（简化服务端客户端的复制操作），可以建立一个基础的maven工程将能够复用的DTO与接口定义，然后在provider和consumer项目引入该项目的依赖。注意：共享的接口改变时的问题
+4.重试机制
+5.histrix配置
+    feign.hystrix.enabled=false关闭Hystrix功能
+    hystrix.command.default.execution.timeout.enabled=false关闭熔断功能。
+</code></pre><p>注意:1.通常不建议在服务器和客户端之间共享接口。它引入紧耦合，并且实际上不能以当前形式的Spring MVC（方法参数映射不被继承）起作用。<br> 2.同时使用继承特性和Hystrix回调（或者称服务降级）时，不能在公共接口类中使用@RequestMapping，因为客户端会去继承公共接口类并使用@FeignClient注解，但是这是不允许的，如果使用fallback会出现如下情况。Ambiguous mapping.有歧义的映射类</p>
+<p>替代方案是在服务端实现公共接口类中定义@RequestMapping，从而避免在同一个接口类中同时使用@RequestMapping、@FeignClient</p>
+<h2 id="Spring-Cloud-Sleuth"><a href="#Spring-Cloud-Sleuth" class="headerlink" title="Spring Cloud Sleuth:"></a>Spring Cloud Sleuth:</h2><pre><code>分布式服务跟踪：
+    traceId：服务跟踪的唯一标识，通过traceId我们就能将所有请求过程的日志关联起来。
+    spanId:为了统计各处理单元的时间延迟，即时间戳记录
+</code></pre><h2 id="Zuul"><a href="#Zuul" class="headerlink" title="Zuul:"></a>Zuul:</h2><p>API网关，过滤器机制。</p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2018-03-12</span><i class="fa fa-tag"></i><a href="/tags/之前的笔记整理/" title="之前的笔记整理" class="tag">之前的笔记整理 </a></div></div></div></div><div class="share"><div class="evernote"><a href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank" class="fa fa-bookmark"></a></div><div class="weibo"><a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" class="fa fa-weibo"></a></div><div class="twitter"><a href="http://twitter.com/home?status=,https://845146913.github.io/2018/03/12/springCloud整理/,SilenceWang's Blog,springCloud整理,;" class="fa fa-twitter"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a role="navigation" href="/2018/04/22/enums/" title="java enums扩展" class="btn">上一篇</a></li><li class="next pagbuttons"><a role="navigation" href="/2018/01/18/pythonRecord/" title="python学习笔记" class="btn">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

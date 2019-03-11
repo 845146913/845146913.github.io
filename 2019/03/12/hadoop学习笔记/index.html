@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="John Doe"><title>hadoop学习笔记 · SilenceWang's Blog</title><meta name="description" content="笔记1.hadoop组成Hadoop项目主要包含：
+
+
+Hadoop Common（支撑其他模块）、
+Hadoop Distributed File System（HDFS分布式系统对应用提供高吞吐量的访问）
+Hadoop Yarn（资源管理和任务调度的一个框架）
+Hadoop MapReduce（"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">SilenceWang's Blog</a></h3><div class="description"><p>每天进步一点....(不定期更新)</p></div></div></div><ul class="social-links"></ul><div class="footer"><div class="by_farbox"></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a onclick="window.history.go(-1)" class="fa fa-chevron-left"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>hadoop学习笔记</a></h3></div><div class="post-content"><h1 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h1><h2 id="1-hadoop组成"><a href="#1-hadoop组成" class="headerlink" title="1.hadoop组成"></a>1.hadoop组成</h2><p>Hadoop项目主要包含：</p>
+<blockquote>
+<ul>
+<li>Hadoop Common（支撑其他模块）、</li>
+<li>Hadoop Distributed File System（HDFS分布式系统对应用提供高吞吐量的访问）</li>
+<li>Hadoop Yarn（资源管理和任务调度的一个框架）</li>
+<li>Hadoop MapReduce（对海量数据进行处理和计算的Yarn基本系统）</li>
+</ul>
+</blockquote>
+<h3 id="HDFS体系结构："><a href="#HDFS体系结构：" class="headerlink" title="HDFS体系结构："></a>HDFS体系结构：</h3><pre><code>采用主从（Master/Slave）结构模型，一个HDFS集群是由一个NameNode（元数据的管理者）若干个DataNode组成的。
+</code></pre><h4 id="HDFS指令："><a href="#HDFS指令：" class="headerlink" title="HDFS指令："></a>HDFS指令：</h4><p>  HDFS Shell指令包含各种shell like命令，URI格式是：scheme://auth/path; scheme是hdfs，表示HDFS系统，auth是file，表示本地系统。scheme和auth都是可选的，不选为默认。<br>指令格式：</p>
+<blockquote>
+<ul>
+<li>hadoop fs:使用面最广，可操作任意文件系统</li>
+<li>hdfs dfs:只能操作hdfs系统,hadoop dfs已经过时。</li>
+</ul>
+</blockquote>
+<h3 id="MapReduce："><a href="#MapReduce：" class="headerlink" title="MapReduce："></a>MapReduce：</h3><pre><code>并行编程模式，简单易用。分布式处理海量数据运算和任务调度。
+</code></pre><h3 id="Hadoop安装配置"><a href="#Hadoop安装配置" class="headerlink" title="Hadoop安装配置"></a>Hadoop安装配置</h3><p>   首先安装jdk，配置jdk环境变量,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">修改环境变量：</div><div class="line">sudo vim ~/.bashrc</div><div class="line">文件的末尾追加下面内容:</div><div class="line"></div><div class="line">#set oracle jdk environment</div><div class="line">export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_151  ## 这里要注意目录要换成自己解压的jdk 目录</div><div class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre  </div><div class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib  </div><div class="line">export PATH=$&#123;JAVA_HOME&#125;/bin:$PATH  </div><div class="line">使环境变量马上生效</div><div class="line"> source ~/.bashrc</div></pre></td></tr></table></figure></p>
+<p>   然后再安装Hadoop</p>
+<h4 id="1-下载安装包"><a href="#1-下载安装包" class="headerlink" title="1.下载安装包"></a>1.下载安装包</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-3.0.0/hadoop-3.0.0.tar.gz</div><div class="line"># 解压缩到 /usr/local/hadoop3 ,</div><div class="line">tar -zxvf hadoop-3.0.0.tar.gz -C /usr/local/hadoop3/</div></pre></td></tr></table></figure>
+<h4 id="2-配置环境变量"><a href="#2-配置环境变量" class="headerlink" title="2.配置环境变量"></a>2.配置环境变量</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">vim /etc/profile</div><div class="line">#Hadoop 3.0</div><div class="line">export HADOOP_HOME=/usr/local/hadoop3</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</div><div class="line"></div><div class="line">export HADOOP_COMMON_HOME=$HADOOP_HOME </div><div class="line">export HADOOP_HDFS_HOME=$HADOOP_HOME </div><div class="line">export HADOOP_MAPRED_HOME=$HADOOP_HOME</div><div class="line">export HADOOP_YARN_HOME=$HADOOP_HOME </div><div class="line"></div><div class="line">export HADOOP_INSTALL=$HADOOP_HOME </div><div class="line">export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native </div><div class="line">export HADOOP_CONF_DIR=$HADOOP_HOME </div><div class="line">export HADOOP_PREFIX=$HADOOP_HOME </div><div class="line">export HADOOP_LIBEXEC_DIR=$HADOOP_HOME/libexec </div><div class="line">export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH </div><div class="line">export HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop</div><div class="line"></div><div class="line">export HDFS_DATANODE_USER=root</div><div class="line">export HDFS_DATANODE_SECURE_USER=root</div><div class="line">export HDFS_SECONDARYNAMENODE_USER=root</div><div class="line">export HDFS_NAMENODE_USER=root</div><div class="line">#给hadoop3文件夹授予用户hadoop3权限</div><div class="line">sudo chown -R hadoop3:hadoop3 /mnt/d/server/hadoop3</div></pre></td></tr></table></figure>
+<h3 id="HBase"><a href="#HBase" class="headerlink" title="HBase"></a>HBase</h3><p>分布式，面向列的NoSql数据库。采用hdfs存储数据，用mapreduce操作数据。</p>
+<h3 id="Hive"><a href="#Hive" class="headerlink" title="Hive"></a>Hive</h3><p>基于hadoop的数据仓库工具，可以将结构化的数据文件映射为一张数据库表，并提供简单的sql查询功能，将sql转换成mapred任务进行运行。主要解决非关系型数据查询问题。</p>
+<h4 id="Hive的数据模型"><a href="#Hive的数据模型" class="headerlink" title="Hive的数据模型"></a>Hive的数据模型</h4><p>hive表逻辑上由存储的数据和描述表格形式的相关元数据组成。数据一般存在hdfs上，元数据存关系型数据库中。</p>
+<h4 id="hive-api操作："><a href="#hive-api操作：" class="headerlink" title="hive api操作："></a>hive api操作：</h4><blockquote>
+<ul>
+<li>CLI : shell命令行</li>
+<li>JDBC\ODBC : java调用</li>
+<li>WebUI : 通过浏览器访问Hive.<h4 id="Hive内置函数和UDF"><a href="#Hive内置函数和UDF" class="headerlink" title="Hive内置函数和UDF"></a>Hive内置函数和UDF</h4>内置函数主要：数学函数和聚合函数。<br>UDF函数可以直接用于select语句。<br>编写UDF函数时需要注意：</li>
+<li>自定义UDF需要继承apache.hadoop.hive.ql.UDF类；</li>
+<li>需要实现evaluate函数，evaluate函数支持重载</li>
+</ul>
+</blockquote>
+<h3 id="数据采集Flume"><a href="#数据采集Flume" class="headerlink" title="数据采集Flume"></a>数据采集Flume</h3><p>组件：</p>
+<blockquote>
+<ul>
+<li>Agent : 使用jvm运行flume，每台机器运行一个agent，但是可以在一个agent中包含多个sources和sinks</li>
+<li>Client : 生产数据，运行在一个独立的线程</li>
+<li>Source : 从Client收集数据，传给Channel</li>
+<li>Sink : 从channel收集数据，运行在一个独立线程</li>
+<li>Channel : 连接sources和sinks，这个有点像一个队列</li>
+<li>Events : 可以是日志记录、avro对象等</li>
+</ul>
+</blockquote>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2019-03-12</span><i class="fa fa-tag"></i><a href="/tags/hadoop-笔记-Hdfs-Map-Reduce/" title="hadoop, 笔记, Hdfs, Map, Reduce" class="tag">hadoop, 笔记, Hdfs, Map, Reduce </a></div></div></div></div><div class="share"><div class="evernote"><a href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank" class="fa fa-bookmark"></a></div><div class="weibo"><a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" class="fa fa-weibo"></a></div><div class="twitter"><a href="http://twitter.com/home?status=,https://845146913.github.io/2019/03/12/hadoop学习笔记/,SilenceWang's Blog,hadoop学习笔记,;" class="fa fa-twitter"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a role="navigation" href="/2019/03/12/python爬虫/" title="python爬虫爬取某网站数据" class="btn">上一篇</a></li><li class="next pagbuttons"><a role="navigation" href="/2019/03/11/python打开浏览器/" title="python指定浏览器打开链接方法" class="btn">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
