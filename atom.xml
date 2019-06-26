@@ -6,7 +6,7 @@
   <link href="//atom.xml" rel="self"/>
   
   <link href="https://845146913.github.io/"/>
-  <updated>2019-03-15T13:51:32.360Z</updated>
+  <updated>2019-06-26T04:59:38.052Z</updated>
   <id>https://845146913.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>redis笔记整理</title>
+    <link href="https://845146913.github.io/2019/05/25/redisRecord/"/>
+    <id>https://845146913.github.io/2019/05/25/redisRecord/</id>
+    <published>2019-05-25T03:15:09.000Z</published>
+    <updated>2019-06-26T04:59:38.052Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Redis主从、哨兵笔记"><a href="#Redis主从、哨兵笔记" class="headerlink" title="Redis主从、哨兵笔记"></a>Redis主从、哨兵笔记</h1><h2 id="1-主从复制"><a href="#1-主从复制" class="headerlink" title="1.主从复制"></a>1.主从复制</h2><p>通过sync命令发送同步指令，使matser节点和slave节点的数据保持一致。</p><h3 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h3><blockquote><ul><li>主从复制，读写分离，master进行写，slave读</li><li>master非阻塞方式为slave提供服务,不影响数据的修改，查询</li><li>slave同样以非阻塞方式完成数据同步，也可接受其他slave节点的同步和连接</li></ul></blockquote><h3 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h3><blockquote><ul><li>不能自动恢复和容错，需等待重启或手动设置恢复</li><li>master宕机，slave数据未能及时同步而切换IP后会数据不一致</li><li>难在线扩容</li></ul></blockquote><h2 id="2-哨兵模式"><a href="#2-哨兵模式" class="headerlink" title="2.哨兵模式"></a>2.哨兵模式</h2><p>监控系统的运行状态，即master和slave是否正常运行，一旦master出现故障自动从slave中选举出master。</p><h3 id="优点：-1"><a href="#优点：-1" class="headerlink" title="优点："></a>优点：</h3><blockquote><ul><li>基于主从模式的优点都有</li><li>可以自动切换master和slave，可用性更高</li></ul></blockquote><h3 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h3><blockquote><ul><li>同上</li></ul></blockquote><h2 id="3-集群"><a href="#3-集群" class="headerlink" title="3.集群"></a>3.集群</h2><p>集群是3.0加入的cluster模式，采用无中心结构，分布式存储。即避免原来多台服务器存储同一份数据造成资源的浪费。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Redis主从、哨兵笔记&quot;&gt;&lt;a href=&quot;#Redis主从、哨兵笔记&quot; class=&quot;headerlink&quot; title=&quot;Redis主从、哨兵笔记&quot;&gt;&lt;/a&gt;Redis主从、哨兵笔记&lt;/h1&gt;&lt;h2 id=&quot;1-主从复制&quot;&gt;&lt;a href=&quot;#1-主从复制&quot;
+      
+    
+    </summary>
+    
+    
+      <category term="redis, 主从, 哨兵模式" scheme="https://845146913.github.io/tags/redis-%E4%B8%BB%E4%BB%8E-%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>并发频率限制</title>
